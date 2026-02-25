@@ -8,18 +8,13 @@ export default async function handler(req, res) {
     return;
   }
 
+// 🇲🇽 Daily News feeds optimized for a Mexican audience
   const feeds = [
-    'https://techcrunch.com/feed/',
-    'https://www.theverge.com/rss/index.xml',
-    'https://www.wired.com/feed/rss',
-    'https://feeds.arstechnica.com/arstechnica/index',
-    'https://www.technologyreview.com/feed/',
-    'https://feeds.feedburner.com/VentureBeat',
-    'https://krebsonsecurity.com/feed/',
-    'https://www.bleepingcomputer.com/feed/',
-    'https://hnrss.org/frontpage',
-    'https://www.coindesk.com/arc/outboundfeeds/rss/',
-    'https://www.xataka.com.mx/feed.xml' 
+    'https://www.milenio.com/rss',                 // Milenio (Top Mexican Daily News)
+    'https://cnnespanol.cnn.com/feed/',            // CNN en Español (Global/LatAm)
+    'https://feeds.bbci.co.uk/mundo/rss.xml',      // BBC Mundo (Global/LatAm)
+    'https://www.xataka.com.mx/feed.xml',          // Xataka México (Tech & Lifestyle)
+    'http://rss.cnn.com/rss/edition_americas.rss'  // CNN Americas (Global events impacting LatAm)
   ];
 
   let articles = [];
