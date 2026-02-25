@@ -264,7 +264,8 @@ const ALLOWED_DOMAINS = [
   'www.newscientist.com',
 ];
 
-export default async function handler(req) {
+// NOTE: Added ctx parameter for Vercel Edge background tasks
+export default async function handler(req, ctx) {
   const corsHeaders = getCorsHeaders(req, 'GET, OPTIONS');
 
   // Handle CORS preflight
@@ -345,6 +346,30 @@ export default async function handler(req) {
     }
 
     const data = await response.text();
+
+    // --- START n8n WEBHOOK INTEGRATION ---
+    if (response.ok) {
+      const n8nWebhookUrl = 'https://primary-production-65b44.up.railway.app/webhook-test/776d3b5b-cb72-4141-b980-4fafe4f49835';
+      
+      const pushToN8n = fetch(n8nWebhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sourceUrl: feedUrl,
+          timestamp: new Date().toISOString(),
+          xmlData: data // Sends the entire raw RSS/XML feed
+        })
+      }).catch(err => console.error('n8n webhook error:', err));
+
+      // Tell Vercel Edge to finish this background task before closing the function
+      if (typeof ctx !== 'undefined' && ctx.waitUntil) {
+        ctx.waitUntil(pushToN8n);
+      }
+    }
+    // --- END n8n WEBHOOK INTEGRATION ---
+
     return new Response(data, {
       status: response.status,
       headers: {
