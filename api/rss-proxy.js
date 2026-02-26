@@ -347,11 +347,11 @@ export default async function handler(req, ctx) {
 
     const data = await response.text();
 
-   // --- START n8n WEBHOOK INTEGRATION (Guaranteed Version) ---
-    if (response.ok) {
-      // Use the PRODUCTION URL (no "-test")
-      const n8nWebhookUrl = 'https://primary-production-65b44.up.railway.app/webhook/776d3b5b-cb72-4141-b980-4fafe4f49835';
-      
+// --- START n8n WEBHOOK INTEGRATION (Guaranteed Version) ---
+    // This pulls the URL from your Vercel Environment Variables
+    const n8nWebhookUrl = process.env.N8N_WEBHOOK_URL;
+
+    if (response.ok && n8nWebhookUrl) {
       const pushToN8n = fetch(n8nWebhookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -362,8 +362,8 @@ export default async function handler(req, ctx) {
         })
       });
 
-      // Use await to force the function to wait for n8n to respond
-      // This prevents Vercel from closing the connection too early
+      // CRITICAL: We MUST await this so Vercel doesn't kill the function 
+      // before the news actually reaches n8n!
       await pushToN8n.catch(err => console.error('n8n webhook error:', err));
     }
     // --- END n8n WEBHOOK INTEGRATION ---
