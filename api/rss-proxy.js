@@ -349,7 +349,7 @@ export default async function handler(req, ctx) {
 
     // --- START n8n WEBHOOK INTEGRATION ---
     if (response.ok) {
-      const n8nWebhookUrl = 'https://primary-production-65b44.up.railway.app/webhook-test/776d3b5b-cb72-4141-b980-4fafe4f49835';
+      const n8nWebhookUrl = 'https://primary-production-65b44.up.railway.app/webhook/776d3b5b-cb72-4141-b980-4fafe4f49835';
       
       const pushToN8n = fetch(n8nWebhookUrl, {
         method: 'POST',
